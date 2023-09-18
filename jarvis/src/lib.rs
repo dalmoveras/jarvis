@@ -1,5 +1,5 @@
-use std::{ env, fs };
 use std::path::Path;
+use std::{env, fs};
 
 pub struct TodoList {
     pub todo: Vec<String>,
@@ -8,7 +8,7 @@ pub struct TodoList {
 }
 
 impl TodoList {
-    pub fn new() -> Result<Self, String> { 
+    pub fn new() -> Result<Self, String> {
         //let todo = vec!();
         let todo_path: String = match env::var("JARVIS_PATH") {
             Ok(todo_path) => todo_path,
@@ -18,32 +18,25 @@ impl TodoList {
             }
         };
 
-        
         let todo_list = OpenOptions::new()
             .write(true)
             .read(true)
             .create(true)
             .open(&todo_path)
             .expect("Jarvis couldn't open the file");
-        
-        //let backup = String::new();
-        
-        Ok(Self{todo, todo_path })
 
+        //let backup = String::new();
+
+        Ok(Self { todo, todo_path })
     }
 
-    pub fn list() {}    
+    pub fn list() {}
     pub fn add() {}
     pub fn remove() {}
     pub fn encrypt() {}
     pub fn delete() {}
     pub fn restore() {}
-
 }
-
-
-
-
 
 #[cfg(test)]
 mod tests {
