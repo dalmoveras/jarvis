@@ -1,7 +1,8 @@
-use std::env;
-use std::fs::File;
+use chrono::prelude::*;
+use std::fs::{File, OpenOptions};
 use std::io::{BufReader, Error, Write};
 use std::path::Path;
+use std::{env, process};
 pub struct TodoList {
     pub todo: Vec<String>,
     pub file: File,
@@ -25,17 +26,7 @@ impl TodoList {
         };
         let todo = vec![];
         let mut file = File::create(&todo_path).unwrap();
-        write!(file, "------------JARVIS------------");
-        // let todo_list = OpenOptions::new()
-        //     .write(true)
-        //     .read(true)
-        //     .create(true)
-        //     .open(&todo_path)
-        //     .expect("Jarvis couldn't open the file");
-        //
-        // let mut buf_reader = BufReader::new(&todo_list);
-        //let backup = String::new();
-
+        write!(file, "JARVIS LOG FILE\n");
         Ok(Self {
             todo,
             file,
@@ -43,7 +34,23 @@ impl TodoList {
         })
     }
 
-    pub fn add() {}
+    pub fn add(&self, tasks: &[String]) {
+        if tasks.is_empty() {
+            println!("[!] Add functionality needs at least one parameter <task> [!]");
+            process::exit(1);
+        }
+        let timestamp: DateTime<Local> = Local::now();
+        let todo_list = OpenOptions::new()
+            .write(true)
+            .read(true)
+            .create(true)
+            .open(&self.todo_path)
+            .expect("Jarvis couldn't open the file");
+
+        let mut buf_reader = BufReader::new(&todo_list);
+        let backup = String::new();
+    }
+
     pub fn list() {}
     pub fn remove() {}
     pub fn encrypt() {}
