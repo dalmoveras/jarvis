@@ -1,8 +1,10 @@
+use std::env;
+use std::fs::File;
+use std::io::{BufReader, Error, Write};
 use std::path::Path;
-use std::{env, fs};
-
 pub struct TodoList {
     pub todo: Vec<String>,
+    pub file: File,
     pub todo_path: String,
     //pub backup: String,
 }
@@ -14,24 +16,35 @@ impl TodoList {
             Ok(todo_path) => todo_path,
             Err(_) => {
                 let home = env::var("HOME").unwrap();
-                format!("{}/.jarvis", &home)
+                let previous_todo = format!("{}/.jarvis", &home);
+                match Path::new(&previous_todo).exists() {
+                    true => previous_todo,
+                    false => format!("{}/.jarvis", &home),
+                }
             }
         };
-
-        let todo_list = OpenOptions::new()
-            .write(true)
-            .read(true)
-            .create(true)
-            .open(&todo_path)
-            .expect("Jarvis couldn't open the file");
-
+        let todo = vec![];
+        let mut file = File::create(&todo_path).unwrap();
+        write!(file, "------------JARVIS------------");
+        // let todo_list = OpenOptions::new()
+        //     .write(true)
+        //     .read(true)
+        //     .create(true)
+        //     .open(&todo_path)
+        //     .expect("Jarvis couldn't open the file");
+        //
+        // let mut buf_reader = BufReader::new(&todo_list);
         //let backup = String::new();
 
-        Ok(Self { todo, todo_path })
+        Ok(Self {
+            todo,
+            file,
+            todo_path,
+        })
     }
 
-    pub fn list() {}
     pub fn add() {}
+    pub fn list() {}
     pub fn remove() {}
     pub fn encrypt() {}
     pub fn delete() {}
@@ -43,8 +56,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn create_todolist() {
+        let todo = TodoList::new().unwrap();
+        assert_eq!(
+            format!("{}/.jarvis", env::var("HOME").unwrap()),
+            todo.todo_path
+        );
     }
 }
