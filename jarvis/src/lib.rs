@@ -65,7 +65,6 @@ impl TodoList {
             println!("[!] Add functionality needs at least one parameter <task> [!]");
             process::exit(1);
         }
-        let timestamp: DateTime<Local> = Local::now();
         let mut todo_list = OpenOptions::new()
             .write(true)
             .read(true)
@@ -74,7 +73,6 @@ impl TodoList {
             .expect("Jarvis couldn't open the file");
 
         for task in tasks {
-            println!("{}", task);
             write!(todo_list, "{}", task);
         }
     }
