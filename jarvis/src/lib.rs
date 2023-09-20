@@ -77,7 +77,19 @@ impl TodoList {
         }
     }
 
-    pub fn list() {}
+    pub fn list(&self) {
+        let jarvis = OpenOptions::new()
+            .read(true)
+            .open(&self.jarvis_path)
+            .expect("Jarvis couldn't open the file");
+        if let Ok(lines) = BufReader::new(jarvis).lines() {
+            for line in lines {
+                if let Ok(task) = line {
+                    println!("{}", task);
+                }
+            }
+        }
+    }
     pub fn remove() {}
     pub fn encrypt() {}
     pub fn delete() {}
