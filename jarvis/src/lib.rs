@@ -1,7 +1,7 @@
 use chrono::prelude::*;
 use std::error;
 use std::fs::{File, OpenOptions};
-use std::io::{BufReader, Error, Write};
+use std::io::{BufReader,BufRead, Error, Write};
 use std::path::Path;
 use std::{env, process};
 
@@ -78,16 +78,9 @@ impl TodoList {
     }
 
     pub fn list(&self) {
-        let jarvis = OpenOptions::new()
-            .read(true)
-            .open(&self.jarvis_path)
-            .expect("Jarvis couldn't open the file");
-        if let Ok(lines) = BufReader::new(jarvis).lines() {
-            for line in lines {
-                if let Ok(task) = line {
-                    println!("{}", task);
-                }
-            }
+        let reader = BufReader::new(File::open(&self.jarvis_path).expect("Error while trying to open Jarvis file."));
+        for line in reader.lines(){
+            println!("{:?}", line);
         }
     }
     pub fn remove() {}
@@ -116,5 +109,12 @@ mod tests {
         let todo = TodoList::new().unwrap();
         todo.add(&[task1, task2]);
         assert_eq!("Task", "Task");
+    }
+
+    #[test]
+    fn test_list() {
+        let todo = TodoList::new().unwrap();
+        todo.list();
+        assert_eq!(1,1);
     }
 }
